@@ -42,12 +42,18 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(192, 256);
+            this.button4.Location = new System.Drawing.Point(160, 287);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(110, 75);
             this.button4.TabIndex = 17;
@@ -66,7 +72,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(308, 256);
+            this.button3.Location = new System.Drawing.Point(276, 287);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(110, 75);
             this.button3.TabIndex = 15;
@@ -76,7 +82,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(424, 256);
+            this.button2.Location = new System.Drawing.Point(392, 287);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(110, 75);
             this.button2.TabIndex = 14;
@@ -87,11 +93,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(412, 89);
+            this.label1.Location = new System.Drawing.Point(410, 89);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 12);
+            this.label1.Size = new System.Drawing.Size(77, 12);
             this.label1.TabIndex = 13;
-            this.label1.Text = "位数";
+            this.label1.Text = "生成密码位数";
             // 
             // groupBox1
             // 
@@ -99,7 +105,7 @@
             this.groupBox1.Controls.Add(this.checkBox3);
             this.groupBox1.Controls.Add(this.checkBox2);
             this.groupBox1.Controls.Add(this.checkBox1);
-            this.groupBox1.Location = new System.Drawing.Point(578, 89);
+            this.groupBox1.Location = new System.Drawing.Point(578, 81);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(115, 137);
             this.groupBox1.TabIndex = 12;
@@ -111,7 +117,7 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Checked = true;
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox4.Location = new System.Drawing.Point(23, 101);
+            this.checkBox4.Location = new System.Drawing.Point(23, 96);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(48, 16);
             this.checkBox4.TabIndex = 3;
@@ -123,7 +129,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(23, 79);
+            this.checkBox3.Location = new System.Drawing.Point(23, 74);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(42, 16);
             this.checkBox3.TabIndex = 2;
@@ -135,7 +141,7 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Checked = true;
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(23, 57);
+            this.checkBox2.Location = new System.Drawing.Point(23, 52);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(42, 16);
             this.checkBox2.TabIndex = 1;
@@ -147,7 +153,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(23, 35);
+            this.checkBox1.Location = new System.Drawing.Point(23, 30);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(42, 16);
             this.checkBox1.TabIndex = 0;
@@ -156,7 +162,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(456, 86);
+            this.textBox2.Location = new System.Drawing.Point(493, 86);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(41, 21);
             this.textBox2.TabIndex = 11;
@@ -173,7 +179,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(76, 256);
+            this.button1.Location = new System.Drawing.Point(44, 287);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(110, 75);
             this.button1.TabIndex = 9;
@@ -185,17 +191,79 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("宋体", 18F);
-            this.label2.Location = new System.Drawing.Point(80, 89);
+            this.label2.Location = new System.Drawing.Point(81, 84);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(106, 24);
             this.label2.TabIndex = 18;
             this.label2.Text = "保存名称";
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(508, 287);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(110, 75);
+            this.button5.TabIndex = 19;
+            this.button5.Text = "更新密钥";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(183, 210);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(365, 21);
+            this.textBox4.TabIndex = 20;
+            this.textBox4.Visible = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(106, 213);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(71, 12);
+            this.label3.TabIndex = 21;
+            this.label3.Text = "32位AES密钥";
+            this.label3.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(82, 240);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(95, 12);
+            this.label4.TabIndex = 23;
+            this.label4.Text = "新的32位AES密钥";
+            this.label4.Visible = false;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(183, 237);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(365, 21);
+            this.textBox5.TabIndex = 22;
+            this.textBox5.Visible = false;
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(578, 242);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(96, 16);
+            this.checkBox5.TabIndex = 24;
+            this.checkBox5.Text = "启用纯净模式";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(752, 375);
+            this.ClientSize = new System.Drawing.Size(752, 412);
+            this.Controls.Add(this.checkBox5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.textBox3);
@@ -207,7 +275,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Name = "Form1";
-            this.Text = "PasswordCreater";
+            this.Text = "PasswordManager";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -232,6 +300,12 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.CheckBox checkBox5;
     }
 }
 
