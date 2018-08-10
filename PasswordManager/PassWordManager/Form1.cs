@@ -33,7 +33,7 @@ namespace PassWordManager
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            OriPath = System.IO.Directory.GetCurrentDirectory();
+            OriPath = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -73,14 +73,15 @@ namespace PassWordManager
 
             if (PureFlag)
             {
-                file.InitialDirectory = OriPath + "\\bak";
+                file.InitialDirectory = OriPath + "bak";
             }
             else
             {
-                file.InitialDirectory = OriPath + "\\library";
+                file.InitialDirectory = OriPath + "library";
             }
+            //label5.Text = file.InitialDirectory;
 
-            
+
 
             if (file.ShowDialog() == DialogResult.OK)
             {
@@ -102,7 +103,7 @@ namespace PassWordManager
 
                     textBox1.Text = aes_logic.AesDecrypt(aaa.password, AES_KEY);
 
-                    textBox3.Text = aaa.name;
+                    textBox6.Text = aaa.name;
                     Clipboard.SetText(textBox1.Text);
 
                 }
@@ -115,8 +116,8 @@ namespace PassWordManager
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string SavePath = OriPath + "\\library\\" + textBox3.Text + ".pwd";
-            string SavePath2 = OriPath + "\\bak\\" + textBox3.Text + ".bak";
+            string SavePath = OriPath + "library\\" + textBox3.Text + ".pwd";
+            string SavePath2 = OriPath + "bak\\" + textBox3.Text + ".bak";
 
             if (System.IO.File.Exists(SavePath))
             {
@@ -142,7 +143,7 @@ namespace PassWordManager
             string aespassword = aes_logic.AesEncrypt(textBox1.Text, AES_KEY);
             PassWordStruct aaa = new PassWordStruct();
             aaa.NO = 10;
-            aaa.name = textBox3.Text;
+            aaa.name = textBox6.Text;
             aaa.password = aespassword;
 
             aes_logic.SavePassword(aaa, SavePath);
@@ -153,7 +154,7 @@ namespace PassWordManager
         private void button5_Click(object sender, EventArgs e)
         {
 
-            OnLoad(OriPath + "\\library");
+            OnLoad(OriPath + "library");
 
             //AES_KEY = textBox4.Text;
             //AES_KEY_2 = textBox5.Text;
@@ -230,6 +231,22 @@ namespace PassWordManager
 
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //删除文件夹
+            //Directory.Delete("dd", true);
+            File.Delete("sfs");
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
     }
 
     [Serializable]
