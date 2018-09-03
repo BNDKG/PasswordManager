@@ -52,6 +52,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -297,11 +298,22 @@
             this.label6.TabIndex = 28;
             this.label6.Text = "用户名";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(44, 431);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(110, 54);
+            this.button7.TabIndex = 29;
+            this.button7.Text = "从服务器下载密码";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(752, 412);
+            this.ClientSize = new System.Drawing.Size(752, 540);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox6);
             this.Controls.Add(this.label5);
@@ -358,6 +370,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button7;
     }
 }
 

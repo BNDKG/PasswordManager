@@ -14,6 +14,10 @@ using System.Security.Cryptography;
 //序列化
 using System.Runtime.Serialization.Formatters.Binary;
 
+using System.Runtime.Serialization;
+using System.Net.Sockets;
+
+
 namespace PassWordManager
 {
     public partial class Form1 : Form
@@ -247,6 +251,127 @@ namespace PassWordManager
         {
             
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Create a TcpClient.
+                // Note, for this client to work you need to have a TcpServer 
+                // connected to the same address as specified by the server, port
+                // combination.
+                Int32 port = 13000;
+                string server = "192.168.3.9";
+                string message = "fuck the superuniverse";
+
+                string[] messages = { "1", "BNDKG", "kkk", "fdgr" };
+
+                TcpClient client = new TcpClient(server, port);
+
+                //设置接收超时
+                client.ReceiveTimeout = 5000;
+
+                // Translate the passed message into ASCII and store it as a Byte array.
+                //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
+                Byte[] data = ObjectToBytes(messages);
+
+                // Get a client stream for reading and writing.
+                //  Stream stream = client.GetStream();
+
+                NetworkStream stream = client.GetStream();
+
+                // Send the message to the connected TcpServer. 
+                stream.Write(data, 0, data.Length);
+
+                Console.WriteLine("Sent: {0}", message);
+
+                // Receive the TcpServer.response.
+
+                // Buffer to store the response bytes.
+                data = new Byte[256];
+
+
+                // String to store the response ASCII representation.
+                String responseData = String.Empty;
+                String responseData2 = String.Empty;
+
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+
+                string[] receive1 = (string[])BytesToObject(data);
+
+                int blen = Convert.ToInt32(receive1[1]);
+                int clen = Convert.ToInt32(receive1[2]);
+                int dlen = Convert.ToInt32(receive1[3]);
+
+                Byte[] data2 = new Byte[blen];
+                Byte[] data3 = new Byte[clen];
+                Byte[] data4 = new Byte[dlen];
+
+                Int32 bytes2 = stream.Read(data2, 0, data2.Length);
+                Int32 bytes3 = stream.Read(data3, 0, data3.Length);
+                Int32 bytes4 = stream.Read(data4, 0, data4.Length);
+
+                //responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+
+                string[] receive2 = (string[])BytesToObject(data2);
+                string[] receive3 = (string[])BytesToObject(data3);
+                string[] receive4 = (string[])BytesToObject(data4);
+
+                //Console.WriteLine("Received: {0}", receive[1]);
+                //responseData2 = System.Text.Encoding.ASCII.GetString(data2, 0, bytes2);
+                //Console.WriteLine("Received: {0}", responseData2);
+
+
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", ex);
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine("SocketException: {0}", ex);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("TimeoutException: {0}", ex);
+            }
+
+            Console.WriteLine("\n Press Enter to continue...");
+            Console.Read();
+        }
+
+        /// <summary> 
+        /// 将一个object对象序列化，返回一个byte[]         
+        /// </summary> 
+        /// <param name="obj">能序列化的对象</param>         
+        /// <returns></returns> 
+        public static byte[] ObjectToBytes(object obj)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                IFormatter formatter = new BinaryFormatter(); formatter.Serialize(ms, obj); return ms.GetBuffer();
+            }
+        }
+
+        /// <summary> 
+        /// 将一个序列化后的byte[]数组还原         
+        /// </summary>
+        /// <param name="Bytes"></param>         
+        /// <returns></returns> 
+        public static object BytesToObject(byte[] Bytes)
+        {
+            using (MemoryStream ms = new MemoryStream(Bytes))
+            {
+                IFormatter formatter = new BinaryFormatter(); return formatter.Deserialize(ms);
+            }
+        }
+
+
     }
 
     [Serializable]
