@@ -252,6 +252,9 @@ namespace PassWordManager
             
         }
 
+
+        static List<PassWordStruct> curpasswordList;
+
         private void button7_Click(object sender, EventArgs e)
         {
             try
@@ -318,6 +321,22 @@ namespace PassWordManager
                 string[] receive3 = (string[])BytesToObject(data3);
                 string[] receive4 = (string[])BytesToObject(data4);
 
+                int ii = 0;
+                curpasswordList = new List<PassWordStruct>();
+
+
+                foreach (var name in receive2)
+                {
+                    PassWordStruct buffer = new PassWordStruct(1);
+                    buffer.name = name;
+                    buffer.password = receive3[ii];
+                    buffer.info= receive4[ii];
+                    curpasswordList.Add(buffer);
+
+                    ii++;
+                }
+
+
                 //Console.WriteLine("Received: {0}", receive[1]);
                 //responseData2 = System.Text.Encoding.ASCII.GetString(data2, 0, bytes2);
                 //Console.WriteLine("Received: {0}", responseData2);
@@ -371,6 +390,71 @@ namespace PassWordManager
             }
         }
 
+        private void button8_Click(object sender, EventArgs e)
+        {
+            //先读取本地
+            libOnLoad();
+            
+            foreach (var curpwdstruct in curpasswordList)
+            {
+                string searchinfo = curpwdstruct.info;
+                if (bakPWDinfoList.Contains(searchinfo))
+                {
+                    //先不同步
+                    //todo 判断是否相同 不相同则询问
+                    //PassWordStruct aaa = (PassWordStruct)aes_logic.LoadPassword(read);
+                    int index = bakPWDinfoList.FindIndex(zLamda => zLamda == searchinfo);
+
+                }
+                else
+                {
+                    savesingle(curpwdstruct.info, curpwdstruct.name, curpwdstruct.password);
+                }
+                
+            }
+
+
+            int dd = 3;
+        }
+        private void savesingle(string info,string name,string password)
+        {
+            string SavePath = OriPath + "library\\" + info + ".pwd";
+            string SavePath2 = OriPath + "bak\\" + info + ".bak";
+
+            //string aespassword = aes_logic.AesEncrypt(textBox1.Text, AES_KEY);
+            PassWordStruct aaa = new PassWordStruct();
+            aaa.NO = 10;
+            aaa.name = name;
+            aaa.password = password;
+
+            aes_logic.SavePassword(aaa, SavePath);
+            aes_logic.SavePasswordPure(aaa, SavePath2);
+        }
+
+        static List<string> bakPWDPathList = new List<string>();
+        static List<string> bakPWDinfoList = new List<string>();
+
+        private void libOnLoad()
+        {
+            string bakpath = OriPath + "library\\";
+            //获取指定文件夹的所有文件
+            string[] paths = Directory.GetFiles(bakpath);
+            foreach (var item in paths)
+            {
+                //获取文件后缀名
+                string extension = Path.GetExtension(item).ToLower();
+                if (extension == ".pwd")
+                {
+
+                    string savename = Path.GetFileNameWithoutExtension(item).ToLower();
+                    bakPWDPathList.Add(item);
+                    bakPWDinfoList.Add(savename);
+                }
+            }
+
+        }
+
+
 
     }
 
@@ -393,6 +477,22 @@ namespace PassWordManager
         }
 
     }
+
+    [Serializable]
+    public struct PassWordDic
+    {
+        //密码字典结构
+        public string Name;
+        public string password;
+        public string otherinfo;
+        public int numberofpassword;
+        //public PassWordStruct[] MYpasswords;
+        public List<PassWordStruct> MYpasswordList;
+
+
+    }
+
+
     public class aes_logic
     {
         /// <summary>
