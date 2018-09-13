@@ -17,6 +17,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Net.Sockets;
 
+using System.Web.Script.Serialization;
 
 namespace PassWordManager
 {
@@ -267,7 +268,9 @@ namespace PassWordManager
                 string server = "192.168.3.9";
                 string message = "fuck the superuniverse";
 
+                string[] messages1 = { "002", "3" };
                 string[] messages = { "1", "BNDKG", "kkk", "fdgr" };
+
 
                 TcpClient client = new TcpClient(server, port);
 
@@ -276,13 +279,18 @@ namespace PassWordManager
 
                 // Translate the passed message into ASCII and store it as a Byte array.
                 //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-                Byte[] data = ObjectToBytes(messages);
+
 
                 // Get a client stream for reading and writing.
                 //  Stream stream = client.GetStream();
 
                 NetworkStream stream = client.GetStream();
 
+                Byte[] data1 = aes_logic.StringArrToBytes(messages1);
+
+                stream.Write(data1, 0, data1.Length);
+
+                Byte[] data = ObjectToBytes(messages);
                 // Send the message to the connected TcpServer. 
                 stream.Write(data, 0, data.Length);
 
@@ -678,6 +686,44 @@ namespace PassWordManager
 
             return output;
         }
+
+        public static string[] BytesToStringArr(byte[] Bytes)
+        {
+            string nfefe = Encoding.UTF8.GetString(Bytes);
+            return FromJSON<string[]>(nfefe);
+        }
+        public static byte[] StringArrToBytes(string[] StringArr)
+        {
+            string get = ToJSON(StringArr);
+            return Encoding.UTF8.GetBytes(get);
+        }
+
+        /// <summary>
+        /// 内存对象转换为json字符串
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToJSON(object obj)
+        {
+            StringBuilder sb = new StringBuilder();
+            JavaScriptSerializer json = new JavaScriptSerializer();
+            json.Serialize(obj, sb);
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Json字符串转内存对象
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T FromJSON<T>(string jsonString)
+        {
+            JavaScriptSerializer json = new JavaScriptSerializer();
+            return json.Deserialize<T>(jsonString);
+        }
+
+
 
     }
 
