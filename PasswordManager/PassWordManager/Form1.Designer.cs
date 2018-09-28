@@ -54,6 +54,19 @@
             this.label6 = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox11 = new System.Windows.Forms.TextBox();
+            this.button11 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -319,11 +332,139 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(439, 391);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(132, 21);
+            this.textBox7.TabIndex = 31;
+            this.textBox7.Text = "13000";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(365, 394);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 12);
+            this.label7.TabIndex = 32;
+            this.label7.Text = "端口号";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(365, 421);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(41, 12);
+            this.label8.TabIndex = 34;
+            this.label8.Text = "ip地址";
+            // 
+            // textBox8
+            // 
+            this.textBox8.Location = new System.Drawing.Point(439, 418);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.Size = new System.Drawing.Size(132, 21);
+            this.textBox8.TabIndex = 33;
+            this.textBox8.Text = "192.168.3.9";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(365, 479);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(53, 12);
+            this.label9.TabIndex = 38;
+            this.label9.Text = "登录密码";
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(439, 476);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(132, 21);
+            this.textBox9.TabIndex = 37;
+            this.textBox9.Text = "aaabbbccc";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(365, 452);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(65, 12);
+            this.label10.TabIndex = 36;
+            this.label10.Text = "登录账户名";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(439, 449);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(132, 21);
+            this.textBox10.TabIndex = 35;
+            this.textBox10.Text = "BNDKG2";
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(601, 385);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(108, 48);
+            this.button9.TabIndex = 39;
+            this.button9.Text = "服务器连接测试";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(601, 439);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(108, 48);
+            this.button10.TabIndex = 40;
+            this.button10.Text = "新建用户";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(341, 506);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(89, 12);
+            this.label11.TabIndex = 42;
+            this.label11.Text = "超级管理员密码";
+            // 
+            // textBox11
+            // 
+            this.textBox11.Location = new System.Drawing.Point(439, 503);
+            this.textBox11.Name = "textBox11";
+            this.textBox11.Size = new System.Drawing.Size(132, 21);
+            this.textBox11.TabIndex = 41;
+            this.textBox11.Text = "admin";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(715, 385);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(108, 48);
+            this.button11.TabIndex = 43;
+            this.button11.Text = "上传本地密码";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(752, 540);
+            this.ClientSize = new System.Drawing.Size(892, 540);
+            this.Controls.Add(this.button11);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.textBox11);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBox9);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.textBox10);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.textBox8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.textBox7);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.label6);
@@ -384,6 +525,19 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox11;
+        private System.Windows.Forms.Button button11;
     }
 }
 

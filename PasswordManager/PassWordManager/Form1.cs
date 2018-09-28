@@ -64,6 +64,8 @@ namespace PassWordManager
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string aaab = aes_logic.AesEncrypt("111", "12345678876543211234567887654abc");
+
 
             string path = OriPath;
 
@@ -164,7 +166,7 @@ namespace PassWordManager
             //AES_KEY = textBox4.Text;
             //AES_KEY_2 = textBox5.Text;
 
-            foreach (string item in picPathList)
+            foreach (string item in pswPathList)
             {
 
                 PassWordStruct aaa = new PassWordStruct();
@@ -198,15 +200,13 @@ namespace PassWordManager
                 }
 
 
-
-
             }
 
             int dfs = 9;
 
         }
 
-        static List<string> picPathList = new List<string>();
+        static List<string> pswPathList = new List<string>();
 
         public static void OnLoad(string filepath)
 
@@ -228,7 +228,7 @@ namespace PassWordManager
 
                 {
 
-                    picPathList.Add(item);//添加到图片list中
+                    pswPathList.Add(item);//添加到图片list中
 
                 }
 
@@ -260,15 +260,12 @@ namespace PassWordManager
         {
             try
             {
-                // Create a TcpClient.
-                // Note, for this client to work you need to have a TcpServer 
-                // connected to the same address as specified by the server, port
-                // combination.
-                Int32 port = 13000;
-                string server = "192.168.3.9";
-                string message = "fuck the superuniverse";
 
-                string[] messages1 = { "002", "3" };
+                Int32 port = Convert.ToInt32(textBox7.Text);
+                string server = textBox8.Text;
+
+
+                string[] messages1 = { "001", "0256" };
                 string[] messages = { "1", "BNDKG", "kkk", "fdgr" };
 
 
@@ -276,13 +273,6 @@ namespace PassWordManager
 
                 //设置接收超时
                 client.ReceiveTimeout = 5000;
-
-                // Translate the passed message into ASCII and store it as a Byte array.
-                //Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
-
-
-                // Get a client stream for reading and writing.
-                //  Stream stream = client.GetStream();
 
                 NetworkStream stream = client.GetStream();
 
@@ -294,7 +284,7 @@ namespace PassWordManager
                 // Send the message to the connected TcpServer. 
                 stream.Write(data, 0, data.Length);
 
-                Console.WriteLine("Sent: {0}", message);
+
 
                 // Receive the TcpServer.response.
 
@@ -345,12 +335,6 @@ namespace PassWordManager
                 }
 
 
-                //Console.WriteLine("Received: {0}", receive[1]);
-                //responseData2 = System.Text.Encoding.ASCII.GetString(data2, 0, bytes2);
-                //Console.WriteLine("Received: {0}", responseData2);
-
-
-
                 // Close everything.
                 stream.Close();
                 client.Close();
@@ -368,9 +352,294 @@ namespace PassWordManager
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
 
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
         }
+        private void ConnectCheck()
+        {
+            try
+            {
+
+                Int32 port = Convert.ToInt32(textBox7.Text);
+                string server = textBox8.Text;
+
+                //表示c# 客户端 接下来数据长度是256byte
+                string[] messages1 = { "001", "0256" };
+
+                string Username = textBox10.Text;
+                string key= textBox9.Text;
+
+                //测试服务器是否在线
+                string[] messages = { "0", "", "", "Superbndkg" };
+
+                TcpClient client = new TcpClient(server, port);
+                //设置接收超时
+                client.ReceiveTimeout = 500;
+
+                NetworkStream stream = client.GetStream();
+
+                Byte[] data1 = aes_logic.StringArrToBytes(messages1);
+                stream.Write(data1, 0, data1.Length);
+
+                Byte[] data = ObjectToBytes(messages);
+                stream.Write(data, 0, data.Length);
+
+                //设置接收消息的长度
+                data = new Byte[256];
+
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+
+                string[] receive1 = (string[])BytesToObject(data);
+
+                int error = Convert.ToInt32(receive1[0]);
+                if (error == 1)
+                {
+                    MessageBox.Show("服务器正常运行");
+
+                }
+                else
+                {
+                    MessageBox.Show("服务器忙");
+                }
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show("其他错误");
+                Console.WriteLine("ArgumentNullException: {0}", ex);
+            }
+            catch (SocketException ex)
+            {
+                MessageBox.Show("服务器连接失败");
+                Console.WriteLine("SocketException: {0}", ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("服务器忙");
+                Console.WriteLine("TimeoutException: {0}", ex);
+            }
+        }
+        private void CreateUser()
+        {
+            try
+            {
+
+                Int32 port = Convert.ToInt32(textBox7.Text);
+                string server = textBox8.Text;
+
+                //表示c# 客户端 接下来数据长度是256byte
+                string[] messages1 = { "001", "0256" };
+
+                string Username = textBox10.Text;
+                string key = textBox9.Text;
+
+                //代表新建用户 用户名 密钥 超级管理员
+                string[] messages = { "3", Username, key, "Superbndkgx" };
+
+                TcpClient client = new TcpClient(server, port);
+
+                //设置接收超时
+                client.ReceiveTimeout = 5000;
+
+                NetworkStream stream = client.GetStream();
+
+                Byte[] data1 = aes_logic.StringArrToBytes(messages1);
+                stream.Write(data1, 0, data1.Length);
+
+                Byte[] data = ObjectToBytes(messages);
+                stream.Write(data, 0, data.Length);
+
+                data = new Byte[256];
+                Int32 bytes = stream.Read(data, 0, data.Length);
+
+                string[] receive1 = (string[])BytesToObject(data);
+
+                int error = Convert.ToInt32(receive1[0]);
+                if (error == 1)
+                {
+                    MessageBox.Show("创建成功");
+                }
+                else if(error == 2)
+                {
+                    MessageBox.Show("超级管理员密码错误");
+                }
+                else if (error == 3)
+                {
+                    MessageBox.Show("用户名已存在");
+                }
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show("其他错误");
+                Console.WriteLine("ArgumentNullException: {0}", ex);
+            }
+            catch (SocketException ex)
+            {
+                MessageBox.Show("服务器连接失败");
+                Console.WriteLine("SocketException: {0}", ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("服务器忙");
+                Console.WriteLine("TimeoutException: {0}", ex);
+            }
+        }
+        private void UploadPSW()
+        {
+            try
+            {
+                int port = Convert.ToInt32(textBox7.Text);
+                string server = textBox8.Text;
+
+                //表示c# 客户端 接下来数据长度是256byte
+                string[] messages1 = { "001", "0256" };
+
+                string Username = textBox10.Text;
+                string key = textBox9.Text;
+
+                //提交上传请求并同时提交用户名密码
+                string[] messages = { "2", Username, key, "Superbndkg" };
+
+                TcpClient client = new TcpClient(server, port);
+                //设置接收超时
+                client.ReceiveTimeout = 500;
+
+                NetworkStream stream = client.GetStream();
+
+                Byte[] data1 = aes_logic.StringArrToBytes(messages1);
+                stream.Write(data1, 0, data1.Length);
+
+                Byte[] data = ObjectToBytes(messages);
+                stream.Write(data, 0, data.Length);
+
+
+                //设置接收消息的长度
+                data = new Byte[256];
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+
+                string[] receive1 = (string[])BytesToObject(data);
+
+                int error = Convert.ToInt32(receive1[0]);
+                if (error == 1)
+                {
+                    MessageBox.Show("服务器连接成功,正在上传");
+                    
+
+                    byte[][] backmsgs = UploadPSWbak();
+
+                    foreach (var singlemsg in backmsgs)
+                    {
+                        int len = singlemsg.Length;
+
+                        stream.Write(singlemsg, 0, len);
+
+                        //这里考虑下要不要wait
+                    }
+
+                }
+                else if (error == 2)
+                {
+                    MessageBox.Show("没有此账号");
+                }
+                else
+                {
+                    MessageBox.Show("账号密码错误");
+                }
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show("其他错误");
+                Console.WriteLine("ArgumentNullException: {0}", ex);
+            }
+            catch (SocketException ex)
+            {
+                MessageBox.Show("服务器连接失败");
+                Console.WriteLine("SocketException: {0}", ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("服务器忙");
+                Console.WriteLine("TimeoutException: {0}", ex);
+            }
+        }
+        private byte[][] UploadPSWbak()
+        {
+            byte[][] backmsgs = new byte[4][];
+            backmsgs[0] = new byte[] { 0x00 };
+
+
+            OnLoad(OriPath + "library");
+
+            //AES_KEY = textBox4.Text;
+            //AES_KEY_2 = textBox5.Text;
+
+            string[] buffname = new string[pswPathList.Count()];
+            string[] buffpsw = new string[pswPathList.Count()];
+            string[] buffinfo = new string[pswPathList.Count()];
+
+            int i = 0;
+            foreach (string item in pswPathList)
+            {
+
+                PassWordStruct aaa = new PassWordStruct();
+                string buffcode = "";
+
+                try
+                {
+                    /*
+                    aaa.NO = 10;
+                    aaa.name = System.IO.Path.GetFileName(item); ;
+                    aaa.password = "f7GCOYZ0k7w0DDLsWX4LQzut3lsmlcr32S1MrLmPybU";
+                    aes_logic.SavePassword(aaa, item);
+                    */
+
+                    //反序列化读结构体
+                    aaa = (PassWordStruct)aes_logic.LoadPassword(item);
+                    buffname[i] = aaa.name;
+                    buffpsw[i] = aaa.password;
+                    buffinfo[i] = aaa.info;
+
+
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("密钥错误！！！");
+                }
+                i++;
+
+            }
+            byte[] msgb = ObjectToBytes(buffname);
+            byte[] msgc = ObjectToBytes(buffpsw);
+            byte[] msgd = ObjectToBytes(buffinfo);
+
+            string blen = (msgb.Length).ToString();
+            string clen = (msgc.Length).ToString();
+            string dlen = (msgd.Length).ToString();
+
+            //第一位功能待定(可以定为只新增或完全同步模式),后三位为数据长度
+            string[] userinfo = { "0", blen, clen, dlen };
+            byte[] msga = ObjectToBytes(userinfo);
+
+            backmsgs[0] = msga;
+            backmsgs[1] = msgb;
+            backmsgs[2] = msgc;
+            backmsgs[3] = msgd;
+
+
+            return backmsgs;
+        }
+
 
         /// <summary> 
         /// 将一个object对象序列化，返回一个byte[]         
@@ -462,8 +731,20 @@ namespace PassWordManager
 
         }
 
+        private void button9_Click(object sender, EventArgs e)
+        {
+            ConnectCheck();
+        }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            CreateUser();
+        }
 
+        private void button11_Click(object sender, EventArgs e)
+        {
+            UploadPSW();
+        }
     }
 
     [Serializable]
@@ -503,6 +784,21 @@ namespace PassWordManager
 
     public class aes_logic
     {
+
+        public static string EncryptWithMD5(string source)
+        {
+            byte[] sor = Encoding.UTF8.GetBytes(source);
+            MD5 md5 = MD5.Create();
+            byte[] result = md5.ComputeHash(sor);
+            StringBuilder strbul = new StringBuilder(40);
+            for (int i = 0; i < result.Length; i++)
+            {
+                strbul.Append(result[i].ToString("x2"));//加密结果"x2"结果为32位,"x3"结果为48位,"x4"结果为64位
+
+            }
+            return strbul.ToString();
+        }
+
         /// <summary>
         ///  AES 加密
         /// </summary>
