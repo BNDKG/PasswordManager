@@ -434,9 +434,10 @@ namespace PassWordManager
 
                 string Username = textBox10.Text;
                 string key = textBox9.Text;
+                string Superadmin= textBox11.Text;
 
                 //代表新建用户 用户名 密钥 超级管理员
-                string[] messages = { "3", Username, key, "Superbndkgx" };
+                string[] messages = { "3", Username, key, Superadmin };
 
                 TcpClient client = new TcpClient(server, port);
 
