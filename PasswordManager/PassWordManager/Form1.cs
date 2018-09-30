@@ -111,6 +111,7 @@ namespace PassWordManager
                     textBox1.Text = aes_logic.AesDecrypt(aaa.password, AES_KEY);
 
                     textBox6.Text = aaa.name;
+                    textBox3.Text = aaa.info;
                     Clipboard.SetText(textBox1.Text);
 
                 }
@@ -152,6 +153,7 @@ namespace PassWordManager
             aaa.NO = 10;
             aaa.name = textBox6.Text;
             aaa.password = aespassword;
+            aaa.info = textBox3.Text;
 
             aes_logic.SavePassword(aaa, SavePath);
             aes_logic.SavePasswordPure(aaa, SavePath2);
@@ -182,15 +184,18 @@ namespace PassWordManager
                     
                     //反序列化读结构体
                     aaa = (PassWordStruct)aes_logic.LoadPassword(item);
+                    /*
                     //使用第一个密钥解密
                     buffcode = aes_logic.AesDecrypt(aaa.password, AES_KEY);
                     //换第二个密钥加密
                     string aespassword = aes_logic.AesEncrypt(buffcode, AES_KEY_2);
                     //序列化存入结构体
                     aaa.password = aespassword;
+                    */
+                    aaa.info = System.IO.Path.GetFileNameWithoutExtension(item);
                     //存入对应位置
-                   
-                    
+                    aes_logic.SavePassword(aaa, item);
+
 
 
                 }
@@ -228,7 +233,7 @@ namespace PassWordManager
 
                 {
 
-                    pswPathList.Add(item);//添加到图片list中
+                    pswPathList.Add(item);//添加到list中
 
                 }
 
@@ -258,6 +263,7 @@ namespace PassWordManager
 
         private void button7_Click(object sender, EventArgs e)
         {
+            /*
             try
             {
 
@@ -351,6 +357,11 @@ namespace PassWordManager
             {
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
+            */
+
+            pswsync();
+
+
 
         }
         private void ConnectCheck()
@@ -418,6 +429,108 @@ namespace PassWordManager
             catch (Exception ex)
             {
                 MessageBox.Show("服务器忙");
+                Console.WriteLine("TimeoutException: {0}", ex);
+            }
+        }
+
+        private void pswsync()
+        {
+            try
+            {
+
+                Int32 port = Convert.ToInt32(textBox7.Text);
+                string server = textBox8.Text;
+
+                //表示c# 客户端 接下来数据长度是256byte
+                string[] messages1 = { "001", "0256" };
+
+                string Username = textBox10.Text;
+                string key = textBox9.Text;
+                string Superadmin = textBox11.Text;
+
+                //代表新建用户 用户名 密钥 超级管理员
+                string[] messages = { "1", Username, key, Superadmin };
+
+                TcpClient client = new TcpClient(server, port);
+
+                //设置接收超时
+                client.ReceiveTimeout = 5000;
+
+                NetworkStream stream = client.GetStream();
+
+                Byte[] data1 = aes_logic.StringArrToBytes(messages1);
+                stream.Write(data1, 0, data1.Length);
+
+                Byte[] data = ObjectToBytes(messages);
+                stream.Write(data, 0, data.Length);
+
+                // Buffer to store the response bytes.
+                data = new Byte[256];
+
+                // String to store the response ASCII representation.
+                String responseData = String.Empty;
+                String responseData2 = String.Empty;
+
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+
+                string[] receive1 = (string[])BytesToObject(data);
+
+                int error = Convert.ToInt32(receive1[0]);
+                if (error == 1)
+                {
+                    int blen = Convert.ToInt32(receive1[1]);
+                    int clen = Convert.ToInt32(receive1[2]);
+                    int dlen = Convert.ToInt32(receive1[3]);
+
+                    Byte[] data2 = new Byte[blen];
+                    Byte[] data3 = new Byte[clen];
+                    Byte[] data4 = new Byte[dlen];
+
+                    Int32 bytes2 = stream.Read(data2, 0, data2.Length);
+                    Int32 bytes3 = stream.Read(data3, 0, data3.Length);
+                    Int32 bytes4 = stream.Read(data4, 0, data4.Length);
+
+                    //responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+
+                    string[] receive2 = (string[])BytesToObject(data2);
+                    string[] receive3 = (string[])BytesToObject(data3);
+                    string[] receive4 = (string[])BytesToObject(data4);
+
+                    int ii = 0;
+                    curpasswordList = new List<PassWordStruct>();
+
+
+                    foreach (var name in receive2)
+                    {
+                        PassWordStruct buffer = new PassWordStruct(1);
+                        buffer.name = name;
+                        buffer.password = receive3[ii];
+                        buffer.info = receive4[ii];
+                        curpasswordList.Add(buffer);
+
+                        ii++;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("下载失败");
+                }
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", ex);
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine("SocketException: {0}", ex);
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
         }
@@ -544,6 +657,27 @@ namespace PassWordManager
                         //这里考虑下要不要wait
                     }
 
+                    //设置接收消息的长度
+                    data = new Byte[256];
+                    // Read the first batch of the TcpServer response bytes.
+                    bytes = stream.Read(data, 0, data.Length);
+
+                    receive1 = (string[])BytesToObject(data);
+
+                    error = Convert.ToInt32(receive1[0]);
+                    if (error==1)
+                    {
+                        //上传成功
+                        MessageBox.Show("上传成功");
+                    }
+                    else if (error == 2)
+                    {
+                        MessageBox.Show("重复密码校验");
+                    }
+                    else
+                    {
+                        MessageBox.Show("未知错误");
+                    }
                 }
                 else if (error == 2)
                 {
@@ -607,7 +741,8 @@ namespace PassWordManager
 
                     //反序列化读结构体
                     aaa = (PassWordStruct)aes_logic.LoadPassword(item);
-                    buffname[i] = aaa.name;
+                    //这里测试一下buffname[i] = aaa.name;
+                    buffname[i] = aaa.info;
                     buffpsw[i] = aaa.password;
                     buffinfo[i] = aaa.info;
 
@@ -704,6 +839,7 @@ namespace PassWordManager
             aaa.NO = 10;
             aaa.name = name;
             aaa.password = password;
+            aaa.info = info;
 
             aes_logic.SavePassword(aaa, SavePath);
             aes_logic.SavePasswordPure(aaa, SavePath2);

@@ -435,7 +435,7 @@
             this.textBox11.Name = "textBox11";
             this.textBox11.Size = new System.Drawing.Size(132, 21);
             this.textBox11.TabIndex = 41;
-            this.textBox11.Text = "admin";
+            this.textBox11.Text = "Superbndkg";
             // 
             // button11
             // 
