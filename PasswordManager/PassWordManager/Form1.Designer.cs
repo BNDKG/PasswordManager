@@ -67,6 +67,12 @@
             this.label11 = new System.Windows.Forms.Label();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.button11 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -223,7 +229,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(110, 75);
             this.button5.TabIndex = 19;
-            this.button5.Text = "更新密钥";
+            this.button5.Text = "从bak恢复";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -233,27 +239,24 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(365, 21);
             this.textBox4.TabIndex = 20;
-            this.textBox4.Visible = false;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(106, 213);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(71, 12);
+            this.label3.Size = new System.Drawing.Size(65, 12);
             this.label3.TabIndex = 21;
-            this.label3.Text = "32位AES密钥";
-            this.label3.Visible = false;
+            this.label3.Text = "原加密密码";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(82, 240);
+            this.label4.Location = new System.Drawing.Point(130, 240);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(95, 12);
+            this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 23;
-            this.label4.Text = "新的32位AES密钥";
-            this.label4.Visible = false;
+            this.label4.Text = "新密码";
             // 
             // textBox5
             // 
@@ -261,7 +264,6 @@
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(365, 21);
             this.textBox5.TabIndex = 22;
-            this.textBox5.Visible = false;
             // 
             // checkBox5
             // 
@@ -379,6 +381,7 @@
             // 
             this.textBox9.Location = new System.Drawing.Point(439, 476);
             this.textBox9.Name = "textBox9";
+            this.textBox9.PasswordChar = '*';
             this.textBox9.Size = new System.Drawing.Size(132, 21);
             this.textBox9.TabIndex = 37;
             this.textBox9.Text = "aaabbbccc";
@@ -447,11 +450,79 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(715, 439);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(108, 48);
+            this.button12.TabIndex = 44;
+            this.button12.Text = "新建本地用户";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Checked = true;
+            this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox6.Location = new System.Drawing.Point(439, 530);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(72, 16);
+            this.checkBox6.TabIndex = 45;
+            this.checkBox6.Text = "记住密码";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(715, 493);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(108, 48);
+            this.button13.TabIndex = 46;
+            this.button13.Text = "本地验证密码";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(708, 287);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(110, 75);
+            this.button14.TabIndex = 47;
+            this.button14.Text = "切换密钥";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(601, 493);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(108, 48);
+            this.button15.TabIndex = 48;
+            this.button15.Text = "生成32位key";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.Location = new System.Drawing.Point(606, 547);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(96, 16);
+            this.checkBox7.TabIndex = 49;
+            this.checkBox7.Text = "禁用密码生成";
+            this.checkBox7.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(892, 559);
+            this.ClientSize = new System.Drawing.Size(892, 608);
+            this.Controls.Add(this.checkBox7);
+            this.Controls.Add(this.button15);
+            this.Controls.Add(this.button14);
+            this.Controls.Add(this.button13);
+            this.Controls.Add(this.checkBox6);
+            this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.textBox11);
@@ -489,6 +560,7 @@
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "PasswordManager";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -538,6 +610,12 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.CheckBox checkBox7;
     }
 }
 

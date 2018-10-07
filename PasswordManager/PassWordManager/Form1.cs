@@ -18,6 +18,7 @@ using System.Runtime.Serialization;
 using System.Net.Sockets;
 
 using System.Web.Script.Serialization;
+using System.Threading;
 
 namespace PassWordManager
 {
@@ -39,6 +40,8 @@ namespace PassWordManager
         private void Form1_Load(object sender, EventArgs e)
         {
             OriPath = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+
+            settinginit();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -74,17 +77,21 @@ namespace PassWordManager
 
         private void button3_Click(object sender, EventArgs e)
         {
+            pswreadlocal(textBox10.Text);
+        }
+        private void pswreadlocal(string username)
+        {
             PureFlag = checkBox5.Checked;
 
             OpenFileDialog file = new OpenFileDialog();
 
             if (PureFlag)
             {
-                file.InitialDirectory = OriPath + "bak";
+                file.InitialDirectory = OriPath + "Users\\" + username + "\\bak";
             }
             else
             {
-                file.InitialDirectory = OriPath + "library";
+                file.InitialDirectory = OriPath + "Users\\" + username + "\\library";
             }
             //label5.Text = file.InitialDirectory;
 
@@ -107,11 +114,12 @@ namespace PassWordManager
                     {
                         aaa = (PassWordStruct)aes_logic.LoadPassword(read);
                     }
-
+                    AES_KEY = aes_logic.EncryptWithMD5(textBox9.Text);
                     textBox1.Text = aes_logic.AesDecrypt(aaa.password, AES_KEY);
 
                     textBox6.Text = aaa.name;
-                    textBox3.Text = aaa.info;
+                    
+                    textBox3.Text = System.IO.Path.GetFileNameWithoutExtension(read);
                     Clipboard.SetText(textBox1.Text);
 
                 }
@@ -124,8 +132,16 @@ namespace PassWordManager
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string SavePath = OriPath + "library\\" + textBox3.Text + ".pwd";
-            string SavePath2 = OriPath + "bak\\" + textBox3.Text + ".bak";
+            pswsavelocal(textBox10.Text);
+
+        }
+
+        private void pswsavelocal(string username)
+        {
+            //string SavePath = OriPath + "library\\" + textBox3.Text + ".pwd";
+            //string SavePath2 = OriPath + "bak\\" + textBox3.Text + ".bak";
+            string SavePath = OriPath + "Users\\" + username + "\\library\\" + textBox3.Text + ".pwd";
+            string SavePath2 = OriPath + "Users\\" + username + "\\bak\\" + textBox3.Text + ".bak";
 
             if (System.IO.File.Exists(SavePath))
             {
@@ -136,7 +152,7 @@ namespace PassWordManager
                 {
                     //MessageBox.Show("覆盖后原密码不可找回，是否确认覆盖?", "警告");
 
-                }                
+                }
                 else if (dr == DialogResult.No)
                 {
                     return;
@@ -147,27 +163,26 @@ namespace PassWordManager
                 }
 
             }
-
-            string aespassword = aes_logic.AesEncrypt(textBox1.Text, AES_KEY);
+            AES_KEY_2 = aes_logic.EncryptWithMD5(textBox9.Text);
+            string aespassword = aes_logic.AesEncrypt(textBox1.Text, AES_KEY_2);
             PassWordStruct aaa = new PassWordStruct();
             aaa.NO = 10;
             aaa.name = textBox6.Text;
             aaa.password = aespassword;
             aaa.info = textBox3.Text;
 
-            aes_logic.SavePassword(aaa, SavePath);
-            aes_logic.SavePasswordPure(aaa, SavePath2);
-
+            aes_logic.SavePassword(aaa, SavePath, true);
+            aes_logic.SavePasswordPure(aaa, SavePath2, true);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
 
-            OnLoad(OriPath + "library");
+            OnLoad(OriPath + "Users\\" + textBox10.Text + "\\library");
 
             //AES_KEY = textBox4.Text;
             //AES_KEY_2 = textBox5.Text;
-
+            int k = 0;
             foreach (string item in pswPathList)
             {
 
@@ -194,9 +209,10 @@ namespace PassWordManager
                     */
                     aaa.info = System.IO.Path.GetFileNameWithoutExtension(item);
                     //存入对应位置
-                    aes_logic.SavePassword(aaa, item);
+                    aes_logic.SavePassword(aaa, item, false);
+                    aes_logic.SavePasswordPure(aaa, bakPathList[k], false);
 
-
+                    k++;
 
                 }
                 catch (Exception)
@@ -207,19 +223,19 @@ namespace PassWordManager
 
             }
 
-            int dfs = 9;
-
         }
 
         static List<string> pswPathList = new List<string>();
+        static List<string> bakPathList = new List<string>();
 
-        public static void OnLoad(string filepath)
+        private void OnLoad(string filepath)
 
         {
 
             //获取指定文件夹的所有文件
 
             string[] paths = Directory.GetFiles(filepath);
+            string bakpathori = OriPath + "Users\\" + textBox10.Text + "\\bak\\";
 
             foreach (var item in paths)
 
@@ -234,7 +250,8 @@ namespace PassWordManager
                 {
 
                     pswPathList.Add(item);//添加到list中
-
+                    string bakpathname = bakpathori + Path.GetFileNameWithoutExtension(item) + ".bak";
+                    bakPathList.Add(bakpathname);
                 }
 
             }
@@ -381,9 +398,11 @@ namespace PassWordManager
                 //测试服务器是否在线
                 string[] messages = { "0", "", "", "Superbndkg" };
 
+
+
                 TcpClient client = new TcpClient(server, port);
                 //设置接收超时
-                client.ReceiveTimeout = 500;
+                client.ReceiveTimeout = 5000;
 
                 NetworkStream stream = client.GetStream();
 
@@ -445,7 +464,7 @@ namespace PassWordManager
                 string[] messages1 = { "001", "0256" };
 
                 string Username = textBox10.Text;
-                string key = textBox9.Text;
+                string key = aes_logic.EncryptWithMD5(textBox9.Text);
                 string Superadmin = textBox11.Text;
 
                 //代表新建用户 用户名 密钥 超级管理员
@@ -511,6 +530,7 @@ namespace PassWordManager
 
                         ii++;
                     }
+                    MessageBox.Show("成功同步所有密码");
                 }
                 else
                 {
@@ -546,7 +566,8 @@ namespace PassWordManager
                 string[] messages1 = { "001", "0256" };
 
                 string Username = textBox10.Text;
-                string key = textBox9.Text;
+
+                string key = aes_logic.EncryptWithMD5(textBox9.Text);
                 string Superadmin= textBox11.Text;
 
                 //代表新建用户 用户名 密钥 超级管理员
@@ -604,6 +625,140 @@ namespace PassWordManager
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
         }
+
+        private void CreateUserLocal(string Username)
+        {
+            string userlibpath = OriPath + "Users\\" + Username + "\\library\\";
+            string userbakpath = OriPath + "Users\\" + Username + "\\bak\\";
+            string curuserpath = OriPath + "Users\\" + Username + "\\psw";
+
+            if (Directory.Exists(userlibpath))
+            {
+                MessageBox.Show("用户已存在");
+                //return 3;
+            }
+            else
+            {
+                System.IO.Directory.CreateDirectory(userlibpath);
+                System.IO.Directory.CreateDirectory(userbakpath);
+            }
+
+
+            PassWordDic newuser = new PassWordDic();
+            newuser.Username = Username;
+            newuser.password = "";
+            newuser.otherinfo = "这里先测试一下";
+            newuser.numberofpassword = 0;
+            newuser.MYpasswordList = new List<PassWordStruct>();
+
+            SaveObj(newuser, curuserpath);
+
+        }
+        private void LoadUserLoacal(string Username)
+        {
+            string curuserpath = OriPath + "Users\\" + Username + "\\psw";
+            if (File.Exists(curuserpath))
+            {
+                PassWordDic newuser=(PassWordDic)LoadObj(curuserpath);
+            }
+            else
+            {
+                MessageBox.Show("用户不存在");
+            }
+
+        }
+
+        private void settinginit()
+        {
+            string curuserpath = OriPath + "Settings\\";
+            if (Directory.Exists(curuserpath))
+            {
+                string cursettingfile = curuserpath + "setting";
+                //读取配置文件
+                try
+                {
+                    List<string> settingget=(List<string>)LoadObj(cursettingfile);             
+                    textBox7.Text = settingget[0];
+                    textBox8.Text = settingget[1];
+                    textBox10.Text = settingget[2];
+                    textBox9.Text = settingget[3];
+                }
+                catch { }
+                
+            }
+            else
+            {
+                //没有则新建
+                System.IO.Directory.CreateDirectory(curuserpath);
+            }
+
+        }
+
+        private void settingsave()
+        {
+            string curuserpath = OriPath + "Settings\\";
+            if (Directory.Exists(curuserpath))
+            {
+                string cursettingfile = curuserpath + "setting";
+                
+                List<string> Savesettings = new List<string>();
+
+                //Savesettings.Add(textBox10.Text);
+                Savesettings.Add(textBox7.Text);//端口号
+                Savesettings.Add(textBox8.Text);//ip add
+                Savesettings.Add(textBox10.Text);//用户名
+                if (checkBox6.Checked)
+                {
+                    Savesettings.Add(textBox9.Text);//密码
+                }
+                else
+                {
+                    Savesettings.Add("");//空密码
+                }
+
+                SaveObj(Savesettings, cursettingfile);
+
+            }
+            else
+            {
+                int error = 10;
+            }
+
+        }
+
+        public static void SaveObj(object obj, string filename)   //序列化保存
+        {
+            try
+            {
+                FileStream fs = new FileStream(filename, FileMode.Create);
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(fs, obj);
+                fs.Close();
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+        public static object LoadObj(string filename)            //序列化读取文件
+        {
+            object Obj = new object();
+            try
+            {
+                FileStream fs = new FileStream(filename, FileMode.Open);
+                BinaryFormatter bf = new BinaryFormatter();
+                Obj = bf.Deserialize(fs);
+                fs.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return Obj;
+        }
+
         private void UploadPSW()
         {
             try
@@ -615,7 +770,7 @@ namespace PassWordManager
                 string[] messages1 = { "001", "0256" };
 
                 string Username = textBox10.Text;
-                string key = textBox9.Text;
+                string key = aes_logic.EncryptWithMD5(textBox9.Text);
 
                 //提交上传请求并同时提交用户名密码
                 string[] messages = { "2", Username, key, "Superbndkg" };
@@ -654,9 +809,10 @@ namespace PassWordManager
 
                         stream.Write(singlemsg, 0, len);
 
-                        //这里考虑下要不要wait
+                        //这里不知道为什么要wait
+                        Thread.Sleep(100);
                     }
-
+                    //Thread.Sleep(1000);
                     //设置接收消息的长度
                     data = new Byte[256];
                     // Read the first batch of the TcpServer response bytes.
@@ -714,7 +870,7 @@ namespace PassWordManager
             backmsgs[0] = new byte[] { 0x00 };
 
 
-            OnLoad(OriPath + "library");
+            OnLoad(OriPath + "Users\\" +textBox10.Text+ "\\library");
 
             //AES_KEY = textBox4.Text;
             //AES_KEY_2 = textBox5.Text;
@@ -742,9 +898,10 @@ namespace PassWordManager
                     //反序列化读结构体
                     aaa = (PassWordStruct)aes_logic.LoadPassword(item);
                     //这里测试一下buffname[i] = aaa.name;
-                    buffname[i] = aaa.info;
+                    buffname[i] = aaa.name;
                     buffpsw[i] = aaa.password;
-                    buffinfo[i] = aaa.info;
+                    
+                    buffinfo[i] = System.IO.Path.GetFileNameWithoutExtension(item);
 
 
                 }
@@ -831,8 +988,8 @@ namespace PassWordManager
         }
         private void savesingle(string info,string name,string password)
         {
-            string SavePath = OriPath + "library\\" + info + ".pwd";
-            string SavePath2 = OriPath + "bak\\" + info + ".bak";
+            string SavePath = OriPath + "Users\\"+ textBox10.Text + "\\library\\" + info + ".pwd";
+            string SavePath2 = OriPath + "Users\\" + textBox10.Text + "\\bak\\" + info + ".bak";
 
             //string aespassword = aes_logic.AesEncrypt(textBox1.Text, AES_KEY);
             PassWordStruct aaa = new PassWordStruct();
@@ -841,8 +998,8 @@ namespace PassWordManager
             aaa.password = password;
             aaa.info = info;
 
-            aes_logic.SavePassword(aaa, SavePath);
-            aes_logic.SavePasswordPure(aaa, SavePath2);
+            aes_logic.SavePassword(aaa, SavePath, false);
+            aes_logic.SavePasswordPure(aaa, SavePath2, false);
         }
 
         static List<string> bakPWDPathList = new List<string>();
@@ -850,7 +1007,7 @@ namespace PassWordManager
 
         private void libOnLoad()
         {
-            string bakpath = OriPath + "library\\";
+            string bakpath = OriPath + "Users\\" + textBox10.Text + "\\library\\";
             //获取指定文件夹的所有文件
             string[] paths = Directory.GetFiles(bakpath);
             foreach (var item in paths)
@@ -875,6 +1032,7 @@ namespace PassWordManager
 
         private void button10_Click(object sender, EventArgs e)
         {
+
             CreateUser();
         }
 
@@ -882,10 +1040,80 @@ namespace PassWordManager
         {
             UploadPSW();
         }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            CreateUserLocal(textBox10.Text);
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            settingsave();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            LoadUserLoacal(textBox10.Text);
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            OnLoad(OriPath + "Users\\" + textBox10.Text + "\\library");
+
+            AES_KEY = aes_logic.EncryptWithMD5(textBox4.Text);
+
+            AES_KEY_2 = aes_logic.EncryptWithMD5(textBox5.Text);
+            int k = 0;
+            foreach (string item in pswPathList)
+            {
+
+                PassWordStruct aaa = new PassWordStruct();
+                string buffcode = "";
+                try
+                {
+                    /*
+                    aaa.NO = 10;
+                    aaa.name = System.IO.Path.GetFileName(item); ;
+                    aaa.password = "f7GCOYZ0k7w0DDLsWX4LQzut3lsmlcr32S1MrLmPybU";
+                    aes_logic.SavePassword(aaa, item);
+                    */
+
+                    //反序列化读结构体
+                    aaa = (PassWordStruct)aes_logic.LoadPassword(item);
+                    
+                    //使用第一个密钥解密
+                    buffcode = aes_logic.AesDecrypt(aaa.password, AES_KEY);
+                    //换第二个密钥加密
+                    string aespassword = aes_logic.AesEncrypt(buffcode, AES_KEY_2);
+                    //序列化存入结构体
+                    aaa.password = aespassword;
+                    
+                    aaa.info = System.IO.Path.GetFileNameWithoutExtension(item);
+                    //存入对应位置
+                    aes_logic.SavePassword(aaa, item,false);
+                    aes_logic.SavePasswordPure(aaa, bakPathList[k],false);
+
+                    k++;
+
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("密钥错误！！！");
+                }
+
+
+            }
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            string curkey=aes_logic.EncryptWithMD5(textBox9.Text);
+
+        }
     }
 
     [Serializable]
-    public struct PassWordStruct  //自定义的数据类型。用来描述员工的信息。 
+    public struct PassWordStruct  
     {
         public int NO;
         public string key;
@@ -908,7 +1136,7 @@ namespace PassWordManager
     public struct PassWordDic
     {
         //密码字典结构
-        public string Name;
+        public string Username;
         public string password;
         public string otherinfo;
         public int numberofpassword;
@@ -983,7 +1211,7 @@ namespace PassWordManager
             return Encoding.UTF8.GetString(resultArray);
         }
 
-        public static void SavePassword(object password, string filename) //序列化保存
+        public static void SavePassword(object password, string filename,bool msgshow) //序列化保存
         {
             try
             {
@@ -991,21 +1219,28 @@ namespace PassWordManager
                 BinaryFormatter bf = new BinaryFormatter();
                 bf.Serialize(fs, password);
                 fs.Close();
-                MessageBox.Show("保存成功！");
+                if (msgshow)
+                {
+                    MessageBox.Show("保存成功！");
+                }
+                
             }
             catch (Exception)
             {
-                MessageBox.Show("保存失败！！！");
+                if (msgshow)
+                {
+                    MessageBox.Show("保存失败！！！");
+                }              
             }
         }
 
-        public static void SavePasswordPure(object password, string filename) //序列化保存
+        public static void SavePasswordPure(object password, string filename, bool msgshow) //序列化保存
         {
             PassWordStruct aaa= (PassWordStruct)password;
-            _SavePasswordPure(aaa.password, filename);
+            _SavePasswordPure(aaa.password, filename,msgshow);
 
         }
-        public static void _SavePasswordPure(string password, string filename) //序列化保存
+        public static void _SavePasswordPure(string password, string filename, bool msgshow) //序列化保存
         {
             try
             {
@@ -1014,11 +1249,11 @@ namespace PassWordManager
                 sw.WriteLine(password);
                 sw.Close();
                 fs.Close();
-                MessageBox.Show("备份保存成功！");
+                if (msgshow) { MessageBox.Show("备份保存成功！"); }
             }
             catch (Exception)
             {
-                MessageBox.Show("备份保存失败！！！");
+                if (msgshow) { MessageBox.Show("备份保存失败！"); }
             }
         }
 
