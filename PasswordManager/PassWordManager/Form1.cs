@@ -77,7 +77,10 @@ namespace PassWordManager
 
         private void button3_Click(object sender, EventArgs e)
         {
-            pswreadlocal(textBox10.Text);
+            if (LoadUserLoacal(textBox10.Text, textBox9.Text))
+            {
+                pswreadlocal(textBox10.Text);
+            }
         }
         private void pswreadlocal(string username)
         {
@@ -132,8 +135,10 @@ namespace PassWordManager
 
         private void button4_Click(object sender, EventArgs e)
         {
-            pswsavelocal(textBox10.Text);
-
+            if (LoadUserLoacal(textBox10.Text, textBox9.Text))
+            {
+                pswsavelocal(textBox10.Text);
+            }
         }
 
         private void pswsavelocal(string username)
@@ -490,6 +495,7 @@ namespace PassWordManager
                 String responseData = String.Empty;
                 String responseData2 = String.Empty;
 
+                Thread.Sleep(2000);
                 // Read the first batch of the TcpServer response bytes.
                 Int32 bytes = stream.Read(data, 0, data.Length);
 
@@ -646,7 +652,7 @@ namespace PassWordManager
 
             PassWordDic newuser = new PassWordDic();
             newuser.Username = Username;
-            newuser.password = "";
+            newuser.password = aes_logic.EncryptWithMD5(textBox9.Text);
             newuser.otherinfo = "这里先测试一下";
             newuser.numberofpassword = 0;
             newuser.MYpasswordList = new List<PassWordStruct>();
@@ -654,16 +660,28 @@ namespace PassWordManager
             SaveObj(newuser, curuserpath);
 
         }
-        private void LoadUserLoacal(string Username)
+        private bool LoadUserLoacal(string Username,string psw)
         {
             string curuserpath = OriPath + "Users\\" + Username + "\\psw";
             if (File.Exists(curuserpath))
             {
                 PassWordDic newuser=(PassWordDic)LoadObj(curuserpath);
+                string curpsw = aes_logic.EncryptWithMD5(psw);
+                if (curpsw== newuser.password)
+                {
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show("密码错误");
+                    return false;
+                }
+
             }
             else
             {
                 MessageBox.Show("用户不存在");
+                return false;
             }
 
         }
@@ -682,6 +700,7 @@ namespace PassWordManager
                     textBox8.Text = settingget[1];
                     textBox10.Text = settingget[2];
                     textBox9.Text = settingget[3];
+                    checkBox6.Checked = bool.Parse(settingget[4]);
                 }
                 catch { }
                 
@@ -715,7 +734,7 @@ namespace PassWordManager
                 {
                     Savesettings.Add("");//空密码
                 }
-
+                Savesettings.Add(Convert.ToString(checkBox6.Checked));//用户名
                 SaveObj(Savesettings, cursettingfile);
 
             }
@@ -777,13 +796,13 @@ namespace PassWordManager
 
                 TcpClient client = new TcpClient(server, port);
                 //设置接收超时
-                client.ReceiveTimeout = 500;
+                client.ReceiveTimeout = 5000;
 
                 NetworkStream stream = client.GetStream();
 
                 Byte[] data1 = aes_logic.StringArrToBytes(messages1);
                 stream.Write(data1, 0, data1.Length);
-
+                Thread.Sleep(500);
                 Byte[] data = ObjectToBytes(messages);
                 stream.Write(data, 0, data.Length);
 
@@ -802,7 +821,7 @@ namespace PassWordManager
                     
 
                     byte[][] backmsgs = UploadPSWbak();
-
+                    Thread.Sleep(500);
                     foreach (var singlemsg in backmsgs)
                     {
                         int len = singlemsg.Length;
@@ -810,9 +829,9 @@ namespace PassWordManager
                         stream.Write(singlemsg, 0, len);
 
                         //这里不知道为什么要wait
-                        Thread.Sleep(100);
+                        Thread.Sleep(500);
                     }
-                    //Thread.Sleep(1000);
+                    Thread.Sleep(1000);
                     //设置接收消息的长度
                     data = new Byte[256];
                     // Read the first batch of the TcpServer response bytes.
@@ -860,7 +879,7 @@ namespace PassWordManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("服务器忙");
+                MessageBox.Show("其他错误");
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
         }
@@ -1038,7 +1057,11 @@ namespace PassWordManager
 
         private void button11_Click(object sender, EventArgs e)
         {
-            UploadPSW();
+            if(LoadUserLoacal(textBox10.Text, textBox9.Text))
+            {
+                UploadPSW();
+            }
+            
         }
 
         private void button12_Click(object sender, EventArgs e)
@@ -1053,14 +1076,15 @@ namespace PassWordManager
 
         private void button13_Click(object sender, EventArgs e)
         {
-            LoadUserLoacal(textBox10.Text);
+            LoadUserLoacal(textBox10.Text,textBox9.Text);
+
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
             OnLoad(OriPath + "Users\\" + textBox10.Text + "\\library");
 
-            AES_KEY = aes_logic.EncryptWithMD5(textBox4.Text);
+            //AES_KEY = aes_logic.EncryptWithMD5(textBox4.Text);
 
             AES_KEY_2 = aes_logic.EncryptWithMD5(textBox5.Text);
             int k = 0;
