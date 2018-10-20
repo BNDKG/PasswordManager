@@ -380,9 +380,32 @@ namespace PassWordManager
                 Console.WriteLine("TimeoutException: {0}", ex);
             }
             */
-
+            //从服务器下载
             pswsync();
 
+            //先读取本地
+            libOnLoad();
+
+            foreach (var curpwdstruct in curpasswordList)
+            {
+                string searchinfo = curpwdstruct.info;
+                if (bakPWDinfoList.Contains(searchinfo))
+                {
+                    //先不同步
+                    //todo 判断是否相同 不相同则询问
+                    //PassWordStruct aaa = (PassWordStruct)aes_logic.LoadPassword(read);
+                    int index = bakPWDinfoList.FindIndex(zLamda => zLamda == searchinfo);
+
+                }
+                else
+                {
+                    savesingle(curpwdstruct.info, curpwdstruct.name, curpwdstruct.password);
+                }
+
+            }
+
+
+            int dd = 3;
 
 
         }
@@ -658,7 +681,7 @@ namespace PassWordManager
             newuser.MYpasswordList = new List<PassWordStruct>();
 
             SaveObj(newuser, curuserpath);
-
+            MessageBox.Show("新建成功");
         }
         private bool LoadUserLoacal(string Username,string psw)
         {
@@ -1084,7 +1107,7 @@ namespace PassWordManager
         {
             OnLoad(OriPath + "Users\\" + textBox10.Text + "\\library");
 
-            //AES_KEY = aes_logic.EncryptWithMD5(textBox4.Text);
+            AES_KEY = aes_logic.EncryptWithMD5(textBox4.Text);
 
             AES_KEY_2 = aes_logic.EncryptWithMD5(textBox5.Text);
             int k = 0;
